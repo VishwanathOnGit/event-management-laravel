@@ -41,7 +41,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load(['user', 'attendee']);
+        $event->load(['user', 'attendees']);
         return new EventResourse($event);
     }
 
