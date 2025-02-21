@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AttendeeResourse;
+use App\Models\Attendee;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -36,9 +37,9 @@ class AttendeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Event $event, Attendee $attendee)
     {
-        //
+        return new AttendeeResourse($attendee);
     }
 
     /**
@@ -52,8 +53,10 @@ class AttendeeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Event $event, Attendee $attendee)
     {
-        //
+        $attendee->delete();
+
+        return response(status: 204);
     }
 }

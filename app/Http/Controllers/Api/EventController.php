@@ -71,6 +71,6 @@ class EventController extends Controller
     {
         $event->delete();
 
-        return response(Response::HTTP_NO_CONTENT);
+        return response(status: Response::HTTP_NO_CONTENT);
     }
 }
