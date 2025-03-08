@@ -4,20 +4,27 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResourse;
+use App\Http\Traits\CanLoadRelationships;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EventController extends Controller
 {
+    use CanLoadRelationships;
+
+    private array $relations = ['user', 'attendees', 'attendees.user'];
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return EventResourse::collection(
-            Event::with('user')->paginate()
-        );
+        $query = $this->loadRelationships(Event::query());
+
+         return EventResourse::collection(
+             $query->latest()->paginate()
+         );
     }
 
     /**
@@ -35,7 +42,7 @@ class EventController extends Controller
             'user_id' => 1
         ]);
 
-        return new EventResourse($event);
+        return new EventResourse($this->loadRelationships($event));
     }
 
     /**
@@ -43,8 +50,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load(['user', 'attendees']);
-        return new EventResourse($event);
+        return new EventResourse($this->loadRelationships($event));
     }
 
     /**
@@ -61,7 +67,7 @@ class EventController extends Controller
             ])
         );
 
-        return $event;
+        return new EventResourse($this->loadRelationships($event));
     }
 
     /**
